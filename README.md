@@ -1,5 +1,5 @@
 # mb-sequence-parser
-A Node.js library to parse MB Studio spot Sequences.dat and Customers.dat files. It can be useful to migrate MB Studio spot setup to another automation software.
+A Node.js library to parse MB Studio spot Sequences.dat files. It can be useful to migrate MB Studio spot setup to another automation software.
 
 The file format specifications are obtained with clean-room design, no copyright infringement intended.
 
