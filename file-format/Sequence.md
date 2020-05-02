@@ -2,7 +2,10 @@
 
 The file is Little Endian.
 
-00-03: File type identification (7B 14 0A 41)
+| Hex   | Content                                                                                        |
+| ----- | ---------------------------------------------------------------------------------------------- |
+| 00-02 | Version identification (I didn't investigate about the format, MB SPOT 8.64.5.1 sets 7B 14 0A) |
+| 03-03 | Seems to be always 41 ("A")                                                                    |
 
 From 04 a list of sequences begins.
 Each sequence is 4985 bytes long (39880 bits: hex 9BC8).  
