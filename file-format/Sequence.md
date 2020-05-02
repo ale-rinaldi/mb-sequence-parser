@@ -34,6 +34,8 @@ At the end of each sequence, another one begins, with no separators.
 From 3E8, a series of 40 objects begin, each of them has a length of 121 bytes (972 bits: hex 3CC). At the end of each object, another one begins, with no separators.
 It seems that the last object is different all the other ones (it's composed by "00"s only), so I'm not sure if it can be used or if it's just a padding.
 
-## Object structure
+## Object structure (WIP)
 
-WIP
+| Hex   | Content                                                                                                                                                               |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 00-00 | Type of object (01=random song, 02=minilist, 04=static file, 05=event or time/date announcement, 08=executable, 09=external stream, 0A=YouTube, 0B=synthetized voice) |
