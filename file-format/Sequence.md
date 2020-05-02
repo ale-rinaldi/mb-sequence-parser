@@ -1,10 +1,11 @@
 # Sequence.dat
 
 The file is Little Endian.
+
 00-03: File type identification (7B 14 0A 41)
 
-From 04 a list of sequences begins.
-Each sequence is 4985 bytes long (39880 bits: hex 9BC8).
+From 04 a list of sequences begins.  
+Each sequence is 4985 bytes long (39880 bits: hex 9BC8).  
 At the end of each sequence, another one begins, with no separators.
 
 ## Sequence structure
@@ -23,8 +24,8 @@ At the end of each sequence, another one begins, with no separators.
 | 18-18 | Sequence disabled |
 | 19-179 | ? (probably the image) |
 
-From 17A, a series of 40 objects begin, each of them has a length of 121 bytes (972 bits: hex 3CC). At the end of each object, another one begins, with no separators.
-It seems that the last object is different from the other ones, it has a sequence of "00"s where the other ones have a sequence of "20"s.
+From 17A, a series of 40 objects begin, each of them has a length of 121 bytes (972 bits: hex 3CC). At the end of each object, another one begins, with no separators.  
+It seems that the last object is different from the other ones, it has a sequence of "00"s where the other ones have a sequence of "20"s.  
 There are other 77 bytes (622 bit, hex: 26E) before the end of the sequences, that seem to be always filled with "00"s.
 
 ## Object structure
