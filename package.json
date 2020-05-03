@@ -7,6 +7,7 @@
     "test": "jest --config jestconfig.json",
     "build": "tsc"
   },
+  "prepare" : "npm run build",
   "files": [
     "lib/**/*"
   ],
