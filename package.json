@@ -1,8 +1,8 @@
 {
   "name": "mb-sequence-parser",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Node.js library to parse MB Studio spot Sequences.dat and Customers.dat files. It can be useful to migrate MB Studio spot setup to another automation software.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc"
