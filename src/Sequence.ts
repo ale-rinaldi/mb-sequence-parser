@@ -9,7 +9,7 @@ class Sequence {
   public endsAtTime: boolean = false;
   public forcedTime: Date = new Date();
   public allowRotation: boolean = false;
-  public deleteOnFailure: boolean = false;
+  public removeOnFailure: boolean = false;
   public maximumDuration: number = 0;
   public disabled: boolean = false;
   public objects: SequenceObject[] = [];

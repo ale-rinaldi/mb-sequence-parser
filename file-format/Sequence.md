@@ -22,7 +22,7 @@ At the end of each sequence, another one begins, with no separators.
 | 08-0B   | Forced time (Unix timestamp, the date is always 01/01/1970)                           |
 | 0C-0C   | Allow rotation (boolean)                                                              |
 | 0D-0D   | ?                                                                                     |
-| 0E-0E   | Delete in case of failure (boolean)                                                   |
+| 0E-0E   | Remove in case of failure (boolean)                                                   |
 | 0F-13   | ?                                                                                     |
 | 14-17   | Maximum duration (in seconds, it's a float32 but seems to be always an integer value) |
 | 18-18   | Sequence disabled                                                                     |

@@ -65,9 +65,9 @@ function parseSequences(file: FileReader): Sequence[] {
     // 0D-0D: ?
     file.skipBytes(1);
 
-    // 0E-0E: Delete in case of failure (boolean)
+    // 0E-0E: Remove in case of failure (boolean)
     buf = file.readBytes(1, true);
-    sequence.deleteOnFailure = buf[0] !== 0;
+    sequence.removeOnFailure = buf[0] !== 0;
 
     // 0F-13: ?
     file.skipBytes(5);
