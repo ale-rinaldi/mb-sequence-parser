@@ -3,6 +3,8 @@ import * as fs from "fs";
 import FileReader from "./FileReader";
 import { FILE } from "dns";
 import SequenceObject from "./Object";
+import ObjectType from "./ObjectType";
+import * as iconv from "iconv-lite";
 
 function parseSequencesFile(path: string): Sequence[] {
   // Open the file
@@ -49,7 +51,7 @@ function parseSequences(file: FileReader): Sequence[] {
     sequence.endsAtTime = (buf[0] & 2) === 2;
 
     // 06-07: ?
-    file.readBytes(2, true);
+    file.skipBytes(2);
 
     // 08-0B: Forced time (Unix timestamp, the date is always 01/01/1970)
     buf = file.readBytes(4, true);
@@ -61,14 +63,14 @@ function parseSequences(file: FileReader): Sequence[] {
     sequence.allowRotation = buf[0] !== 0;
 
     // 0D-0D: ?
-    file.readBytes(1, true);
+    file.skipBytes(1);
 
     // 0E-0E: Delete in case of failure (boolean)
     buf = file.readBytes(1, true);
     sequence.deleteOnFailure = buf[0] !== 0;
 
     // 0F-13: ?
-    file.readBytes(5, true);
+    file.skipBytes(5);
 
     // 14-17: Maximum duration (in seconds, it's a float32 but seems to be always an integer value)
     buf = file.readBytes(4, true);
@@ -80,18 +82,18 @@ function parseSequences(file: FileReader): Sequence[] {
     sequence.disabled = buf[0] !== 0;
 
     // 19-188: ?
-    file.readBytes(0x170, true);
+    file.skipBytes(0x170);
 
     // 189-1A8: Title
     buf = file.readBytes(0x20, true);
-    sequence.title = buf.toString().trim();
+    sequence.title = iconv.decode(buf, "ISO-8859-1").trim();
 
     // 1A9-1C0: Type
     buf = file.readBytes(0x18, true);
-    sequence.type = buf.toString().trim();
+    sequence.type = iconv.decode(buf, "ISO-8859-1").trim();
 
     // 1C1-3E7: ?
-    file.readBytes(0x227, true);
+    file.skipBytes(0x227);
 
     sequence.objects = parseSequenceObjects(file);
 
@@ -100,14 +102,44 @@ function parseSequences(file: FileReader): Sequence[] {
 }
 
 function parseSequenceObjects(file: FileReader): SequenceObject[] {
-  // STUB: just read the bytes of the 40 objects but return empty ones
   let result: SequenceObject[] = [];
   for (let x = 0; x < 40; x++) {
-    let obj = new SequenceObject();
-    file.readBytes(0x3cc, true);
+    // Get the object type
+    let buf = file.readBytes(1, true);
+    let objType = parseObjectType(buf.readInt8());
+    // Skip if null
+    if (objType === ObjectType.Null) {
+      file.skipBytes(0x3cb);
+      continue;
+    }
+    let obj = new SequenceObject(objType);
+    // TODO: parse the object information. Skip all of its byte for now
+    file.skipBytes(0x3cb);
     result.push(obj);
   }
   return result;
+}
+
+function parseObjectType(type: number): ObjectType {
+  switch (type) {
+    case 1:
+      return ObjectType.RandomSong;
+    case 2:
+      return ObjectType.MiniList;
+    case 4:
+      return ObjectType.StaticFile;
+    case 5:
+      return ObjectType.Event;
+    case 8:
+      return ObjectType.Executable;
+    case 9:
+      return ObjectType.ExternalStream;
+    case 10:
+      return ObjectType.YouTube;
+    case 11:
+      return ObjectType.SynthVoice;
+  }
+  return ObjectType.Null;
 }
 
 export default parseSequencesFile;
