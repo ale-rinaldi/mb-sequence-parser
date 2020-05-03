@@ -38,6 +38,7 @@ At the end of each sequence, another one begins, with no separators.
 | 1DC-1DD | Start date (number of days since Dec 30, 1899), or 00 00 for null (always active)                                        |
 | 1DE-1DF | ?                                                                                                                        |
 | 1E0-1E1 | End date (number of days since Dec 30, 1899), or 00 00 for null (always active)                                          |
+| 1E2-3E7 | ?                                                                                                                        |
 
 From 3E8, a series of 40 objects begin, each of them has a length of 972 bytes (hex 3CC). At the end of each object, another one begins, with no separators.
 It seems that the last object is different all the other ones (it's composed by "00"s only), so I'm not sure if it can be used or if it's just a padding.
