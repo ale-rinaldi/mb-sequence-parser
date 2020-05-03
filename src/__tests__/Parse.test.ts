@@ -21,7 +21,7 @@ test("Sequence ending at time", () => {
   expect(sequence.objects.length).toBe(1);
   expect(sequence.endsAtTime).toBe(true);
   expect(sequence.forced).toBe(false);
-  expect(sequence.objects[0].type).toBe(ObjectType.RandomSong);
+  expect(sequence.objects[0].type).toBe(ObjectType.StaticFile);
 });
 
 test("Sequence with allow rotation and remove on failure", () => {
@@ -32,7 +32,8 @@ test("Sequence with allow rotation and remove on failure", () => {
   expect(sequence.removeOnFailure).toBe(true);
   expect(sequence.forced).toBe(false);
   expect(sequence.maximumDuration).toBe(1466);
-  expect(sequence.objects.length).toBe(0);
+  expect(sequence.objects.length).toBe(1);
+  expect(sequence.objects[0].type).toBe(ObjectType.RandomSong);
 });
 
 test("Sequence with a liner", () => {
