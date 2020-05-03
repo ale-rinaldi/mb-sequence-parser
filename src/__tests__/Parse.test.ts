@@ -68,7 +68,11 @@ test("Sequence with both set and terminate at", () => {
   expect(sequence.endsAtTime).toBe(true);
   expect(sequence.objects.length).toBe(2);
   expect(sequence.objects[0].type).toBe(ObjectType.StaticFile);
+  expect(sequence.objects[0].fileName).toBe("Peppina.mp3");
+  expect(sequence.objects[0].filePath).toBe("C:\\Test\\");
   expect(sequence.objects[1].type).toBe(ObjectType.StaticFile);
+  expect(sequence.objects[1].fileName).toBe("Prova.mp3");
+  expect(sequence.objects[1].filePath).toBe("C:\\Test\\");
 });
 
 test("Sequence with allow rotation", () => {

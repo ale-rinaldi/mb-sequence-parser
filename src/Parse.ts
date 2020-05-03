@@ -112,9 +112,16 @@ function parseSequenceObjects(file: FileReader): SequenceObject[] {
       file.skipBytes(0x3cb);
       continue;
     }
-    let obj = new SequenceObject(objType);
-    // TODO: parse the object information. Skip all of its byte for now
-    file.skipBytes(0x3cb);
+    let obj: SequenceObject;
+    // For now, only static files are parsed.
+    switch (objType) {
+      case ObjectType.StaticFile:
+        obj = parseStaticFileObject(file);
+        break;
+      default:
+        obj = new SequenceObject(objType);
+        file.skipBytes(0x3cb);
+    }
     result.push(obj);
   }
   return result;
@@ -140,6 +147,18 @@ function parseObjectType(type: number): ObjectType {
       return ObjectType.SynthVoice;
   }
   return ObjectType.Null;
+}
+
+// For now, parses file name and path only
+function parseStaticFileObject(file: FileReader): SequenceObject {
+  let obj = new SequenceObject(ObjectType.StaticFile);
+  file.skipBytes(11);
+  let buf = file.readBytes(0x80, true);
+  obj.fileName = iconv.decode(buf, "ISO-8859-1").trim();
+  buf = file.readBytes(0x80, true);
+  obj.filePath = iconv.decode(buf, "ISO-8859-1").trim();
+  file.skipBytes(0x2c0);
+  return obj;
 }
 
 export default parseSequencesFile;
