@@ -1,5 +1,6 @@
 import parser from "../Parse";
 import ObjectType from "../ObjectType";
+import { Day, Month } from "../Calendar";
 
 const TEST_PATH = "./src/__tests__/test_files";
 
@@ -21,7 +22,26 @@ test("Sequence ending at time", () => {
   expect(sequence.objects.length).toBe(1);
   expect(sequence.endsAtTime).toBe(true);
   expect(sequence.forced).toBe(false);
+  expect(sequence.calendar.days).toStrictEqual([Day.Monday, Day.Wednesday]);
+  expect(sequence.calendar.evenWeeks).toBe(true);
+  expect(sequence.calendar.oddWeeks).toBe(false);
+  expect(sequence.calendar.startDate).toStrictEqual(new Date(1585699200000));
+  expect(sequence.calendar.endDate).toStrictEqual(new Date(1590019200000));
   expect(sequence.objects[0].type).toBe(ObjectType.StaticFile);
+  expect(sequence.objects[0].calendar.days).toStrictEqual([
+    Day.Sunday,
+    Day.Wednesday,
+  ]);
+  expect(sequence.objects[0].calendar.oddDays).toBe(true);
+  expect(sequence.objects[0].calendar.oddWeeks).toBe(false);
+  expect(sequence.objects[0].calendar.weekDays).toBe(true);
+  expect(sequence.objects[0].calendar.holidays).toBe(false);
+  expect(sequence.objects[0].calendar.startDate).toStrictEqual(
+    new Date(1588464000000)
+  );
+  expect(sequence.objects[0].calendar.endDate).toStrictEqual(
+    new Date(1589414400000)
+  );
 });
 
 test("Sequence with allow rotation and remove on failure", () => {
@@ -33,6 +53,8 @@ test("Sequence with allow rotation and remove on failure", () => {
   expect(sequence.forced).toBe(false);
   expect(sequence.maximumDuration).toBe(1466);
   expect(sequence.objects.length).toBe(1);
+  expect(sequence.calendar.startDate).toStrictEqual(new Date(0));
+  expect(sequence.calendar.endDate).toStrictEqual(new Date(0));
   expect(sequence.objects[0].type).toBe(ObjectType.RandomSong);
 });
 
@@ -74,6 +96,8 @@ test("Sequence with both set and terminate at", () => {
   expect(sequence.objects[1].type).toBe(ObjectType.StaticFile);
   expect(sequence.objects[1].fileName).toBe("Prova.mp3");
   expect(sequence.objects[1].filePath).toBe("C:\\Test\\");
+  expect(sequence.objects[1].calendar.startDate).toStrictEqual(new Date(0));
+  expect(sequence.objects[1].calendar.endDate).toStrictEqual(new Date(0));
 });
 
 test("Sequence with allow rotation", () => {

@@ -1,10 +1,14 @@
 import Sequence from "./Sequence";
-import * as fs from "fs";
 import FileReader from "./FileReader";
-import { FILE } from "dns";
 import SequenceObject from "./Object";
 import ObjectType from "./ObjectType";
+import { Calendar, Day, Month } from "./Calendar";
 import * as iconv from "iconv-lite";
+
+// Add days to a date (no DST involved, dates are always UTC here)
+function addDays(date: Date, days: number): Date {
+  return new Date(date.getTime() + days * 86400000);
+}
 
 function parseSequencesFile(path: string): Sequence[] {
   // Open the file
@@ -92,8 +96,14 @@ function parseSequences(file: FileReader): Sequence[] {
     buf = file.readBytes(0x18, true);
     sequence.type = iconv.decode(buf, "ISO-8859-1").trim();
 
-    // 1C1-3E7: ?
-    file.skipBytes(0x227);
+    // 1C1-1D3: ?
+    file.skipBytes(0x13);
+
+    // 1D4-1E1: Calendar
+    sequence.calendar = parseCalendar(file);
+
+    // 1E2-3E7: ?
+    file.skipBytes(0x206);
 
     sequence.objects = parseSequenceObjects(file);
 
@@ -152,13 +162,94 @@ function parseObjectType(type: number): ObjectType {
 // For now, parses file name and path only
 function parseStaticFileObject(file: FileReader): SequenceObject {
   let obj = new SequenceObject(ObjectType.StaticFile);
+
+  // 01-0B: ?
   file.skipBytes(11);
+
+  // 0C-8B: File name
   let buf = file.readBytes(0x80, true);
   obj.fileName = iconv.decode(buf, "ISO-8859-1").trim();
+
+  // 8C-10B: File path
   buf = file.readBytes(0x80, true);
   obj.filePath = iconv.decode(buf, "ISO-8859-1").trim();
-  file.skipBytes(0x2c0);
+
+  // 10C-1B7: ?
+  file.skipBytes(0xac);
+
+  // 1B8-1C5: Calendar
+  obj.calendar = parseCalendar(file);
+
+  // 1C6-3CB: ?
+  file.skipBytes(0x206);
   return obj;
+}
+
+function parseCalendar(file: FileReader): Calendar {
+  let cal = new Calendar();
+
+  // 00-03: ? (Someting related to calendar, it's FF FF FF 7F before saving the first time and becomes 00 00 00 00 after first save)
+  file.skipBytes(4);
+
+  // 04-04: 1: Sunday, 2: Monday, 4: Tuesday, 8: Wednesday, 16: Thursday, 32: Friday, 64: Saturday, 128: Even days
+  let buf = file.readBytes(1, true);
+  (buf[0] & 1) === 1 && cal.days.push(Day.Sunday);
+  (buf[0] & 2) === 2 && cal.days.push(Day.Monday);
+  (buf[0] & 4) === 4 && cal.days.push(Day.Tuesday);
+  (buf[0] & 8) === 8 && cal.days.push(Day.Wednesday);
+  (buf[0] & 16) === 16 && cal.days.push(Day.Thursday);
+  (buf[0] & 32) === 32 && cal.days.push(Day.Friday);
+  (buf[0] & 64) === 64 && cal.days.push(Day.Saturday);
+  cal.evenDays = (buf[0] & 128) === 128;
+
+  // 05-05: 1: Odd day, 2: even weeks, 4: odd weeks, 8: weekdays, 16: holidays
+  buf = file.readBytes(1, true);
+  cal.oddDays = (buf[0] & 1) === 1;
+  cal.evenWeeks = (buf[0] & 2) === 2;
+  cal.oddWeeks = (buf[0] & 4) === 4;
+  cal.weekDays = (buf[0] & 8) === 8;
+  cal.holidays = (buf[0] & 16) === 16;
+
+  // 06-06: 1: January, 2: February, 4: March, 8: April, 16: May, 32: June, 64: July, 128: August
+  buf = file.readBytes(1, true);
+  (buf[0] & 1) === 1 && cal.months.push(Month.January);
+  (buf[0] & 2) === 2 && cal.months.push(Month.February);
+  (buf[0] & 4) === 4 && cal.months.push(Month.March);
+  (buf[0] & 8) === 8 && cal.months.push(Month.April);
+  (buf[0] & 16) === 16 && cal.months.push(Month.May);
+  (buf[0] & 32) === 32 && cal.months.push(Month.June);
+  (buf[0] & 64) === 64 && cal.months.push(Month.July);
+  (buf[0] & 128) === 128 && cal.months.push(Month.August);
+
+  // 07-07: 1: September, 2: October, 4: November, 8: December
+  buf = file.readBytes(1, true);
+  (buf[0] & 1) === 1 && cal.months.push(Month.September);
+  (buf[0] & 2) === 2 && cal.months.push(Month.October);
+  (buf[0] & 4) === 4 && cal.months.push(Month.November);
+  (buf[0] & 8) === 8 && cal.months.push(Month.December);
+
+  // 08-09: Start date (number of days since Dec 30, 1899), or 00 00 for null (always active)
+  buf = file.readBytes(2, true);
+  let days = buf.readUInt16LE();
+  if (days === 0) {
+    cal.startDate = new Date(0);
+  } else {
+    cal.startDate = addDays(new Date(-2209161600000), days);
+  }
+
+  // 0A-0B: ?
+  file.skipBytes(2);
+
+  // 0C-0D: End date (number of days since Dec 30, 1899), or 00 00 for null (always active)
+  buf = file.readBytes(2, true);
+  days = buf.readUInt16LE();
+  if (days === 0) {
+    cal.endDate = new Date(0);
+  } else {
+    cal.endDate = addDays(new Date(-2209161600000), days);
+  }
+
+  return cal;
 }
 
 export default parseSequencesFile;

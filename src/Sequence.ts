@@ -1,4 +1,5 @@
 import SequenceObject from "./Object";
+import { Calendar } from "./Calendar";
 
 class Sequence {
   public title: string = "";
@@ -13,6 +14,7 @@ class Sequence {
   public maximumDuration: number = 0;
   public disabled: boolean = false;
   public objects: SequenceObject[] = [];
+  public calendar: Calendar = <Calendar>{};
 }
 
 export default Sequence;
