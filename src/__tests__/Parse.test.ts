@@ -4,7 +4,7 @@ import ObjectType from "../ObjectType";
 const TEST_PATH = "./src/__tests__/test_files";
 
 test("Throw error on non-existing file", () => {
-  expect(() => parser("./not-existing-file.dat")).toThrow();
+  expect(() => parser("./not-existing-file.dat")).toThrow("ENOENT");
 });
 
 const sequences = parser(`${TEST_PATH}/Sequences.test.dat`);
