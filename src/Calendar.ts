@@ -139,6 +139,10 @@ class Calendar {
       (Calendar.isHolidayOn(date) ? this.onHolidays() : this.onWeekDays())
     );
   }
+
+  public isRightDay() {
+    return this.isRightDayOn(new Date());
+  }
 }
 
 export { Calendar, Day, Month };
