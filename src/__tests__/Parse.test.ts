@@ -18,15 +18,19 @@ test("Sequence ending at time", () => {
   let sequence = sequences[0];
   expect(sequence.title).toBe("Seq. 1:26 termina alle");
   expect(sequence.type).toBe("INTRATTENIMENTO");
-  expect(sequence.onAirTime).toStrictEqual(new Date(5160000));
+  expect(sequence.onAirTime).toStrictEqual(new Date("1970-01-01T01:26:00"));
   expect(sequence.objects.length).toBe(1);
   expect(sequence.endsAtTime).toBe(true);
   expect(sequence.forced).toBe(false);
   expect(sequence.calendar.days).toStrictEqual([Day.Monday, Day.Wednesday]);
   expect(sequence.calendar.evenWeeks).toBe(true);
   expect(sequence.calendar.oddWeeks).toBe(false);
-  expect(sequence.calendar.startDate).toStrictEqual(new Date(1585699200000));
-  expect(sequence.calendar.endDate).toStrictEqual(new Date(1590019200000));
+  expect(sequence.calendar.startDate).toStrictEqual(
+    new Date("2020-04-01T00:00:00")
+  );
+  expect(sequence.calendar.endDate).toStrictEqual(
+    new Date("2020-05-21T00:00:00")
+  );
   expect(sequence.objects[0].type).toBe(ObjectType.StaticFile);
   expect(sequence.objects[0].calendar.days).toStrictEqual([
     Day.Sunday,
@@ -37,10 +41,10 @@ test("Sequence ending at time", () => {
   expect(sequence.objects[0].calendar.weekDays).toBe(true);
   expect(sequence.objects[0].calendar.holidays).toBe(false);
   expect(sequence.objects[0].calendar.startDate).toStrictEqual(
-    new Date(1588464000000)
+    new Date("2020-05-03T00:00:00")
   );
   expect(sequence.objects[0].calendar.endDate).toStrictEqual(
-    new Date(1589414400000)
+    new Date("2020-05-14T00:00:00")
   );
 });
 
@@ -72,7 +76,7 @@ test("Sequence with forced set", () => {
   expect(sequence.type).toBe("Pubblicità");
   expect(sequence.forced).toBe(true);
   expect(sequence.endsAtTime).toBe(false);
-  expect(sequence.forcedTime).toStrictEqual(new Date(275000));
+  expect(sequence.forcedTime).toStrictEqual(new Date("1970-01-01T00:04:35"));
 });
 
 test("Disabled sequence", () => {
@@ -86,7 +90,7 @@ test("Sequence with both set and terminate at", () => {
   let sequence = sequences[5];
   expect(sequence.title).toBe("Seq. 15:02:25 forz term");
   expect(sequence.type).toBe("Prova");
-  expect(sequence.onAirTime).toStrictEqual(new Date(54145000));
+  expect(sequence.onAirTime).toStrictEqual(new Date("1970-01-01T15:02:25"));
   expect(sequence.forced).toBe(true);
   expect(sequence.endsAtTime).toBe(true);
   expect(sequence.objects.length).toBe(2);
@@ -103,7 +107,7 @@ test("Sequence with both set and terminate at", () => {
 test("Sequence with allow rotation", () => {
   let sequence = sequences[6];
   expect(sequence.title).toBe("Seq. 18:04 rotaz");
-  expect(sequence.onAirTime).toStrictEqual(new Date(65040000));
+  expect(sequence.onAirTime).toStrictEqual(new Date("1970-01-01T18:04:00"));
   expect(sequence.allowRotation).toBe(true);
   expect(sequence.removeOnFailure).toBe(false);
 });

@@ -5,9 +5,11 @@ import ObjectType from "./ObjectType";
 import { Calendar, Day, Month } from "./Calendar";
 import * as iconv from "iconv-lite";
 
-// Add days to a date (no DST involved, dates are always UTC here)
+// Add days to a date
 function addDays(date: Date, days: number): Date {
-  return new Date(date.getTime() + days * 86400000);
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 }
 
 function parseSequencesFile(path: string): Sequence[] {
@@ -43,7 +45,8 @@ function parseSequences(file: FileReader): Sequence[] {
     }
     let sequence = new Sequence();
     let onAirDateInt = buf.readInt32LE();
-    sequence.onAirTime = new Date(onAirDateInt * 1000);
+    let offset = new Date(0).getTimezoneOffset() * 60;
+    sequence.onAirTime = new Date((onAirDateInt + offset) * 1000);
 
     // 04-04: Liner identifier (int)
     buf = file.readBytes(1, true);
@@ -60,7 +63,7 @@ function parseSequences(file: FileReader): Sequence[] {
     // 08-0B: Forced time (Unix timestamp, the date is always 01/01/1970)
     buf = file.readBytes(4, true);
     let forcedTimeInt = buf.readInt32LE();
-    sequence.forcedTime = new Date(forcedTimeInt * 1000);
+    sequence.forcedTime = new Date((forcedTimeInt + offset) * 1000);
 
     // 0C-0C: Allow rotation (boolean)
     buf = file.readBytes(1, true);
@@ -234,7 +237,7 @@ function parseCalendar(file: FileReader): Calendar {
   if (days === 0) {
     cal.startDate = new Date(0);
   } else {
-    cal.startDate = addDays(new Date(-2209161600000), days);
+    cal.startDate = addDays(new Date("1899-12-30T00:00:00"), days);
   }
 
   // 0A-0B: ?
@@ -246,7 +249,7 @@ function parseCalendar(file: FileReader): Calendar {
   if (days === 0) {
     cal.endDate = new Date(0);
   } else {
-    cal.endDate = addDays(new Date(-2209161600000), days);
+    cal.endDate = addDays(new Date("1899-12-30T00:00:00"), days);
   }
 
   return cal;

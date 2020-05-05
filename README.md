@@ -33,6 +33,10 @@ console.log(sequences[0].calendar.startDate);
 console.log(sequences[0].objects[0].calendar.days);
 ```
 
+## Dates
+
+Please note that, since MB studio doesn't save dates in UTC but in the local timezone the `Sequences.dat` file is generated on, this module returns and compares all the dates in the local timezone, too. So, for them to be correct, you'll need to ensure the timezone of the system you use the module on matches the one MB Studio is running on.
+
 ## Types
 
 The module is written in TypeScript and compiled in JavaScript with types definitions. You should be able to easily use it in your TypeScript project, without external types definitions, and even when you use it in JavaScript projects your editor should give you some type-hinting help.
