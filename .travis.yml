@@ -5,6 +5,8 @@ node_js:
 branches:
   only:
     - master
+env:
+  - TZ=Europe/Rome
 cache:
   directories:
     - node_modules
