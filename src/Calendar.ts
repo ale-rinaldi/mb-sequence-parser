@@ -36,19 +36,6 @@ enum InvalidDayReason {
   WeekDayHoliday,
 }
 
-const Holidayys = [
-  new Date("1970-01-01T00:00:00"),
-  new Date("1970-01-06T00:00:00"),
-  new Date("1970-04-25T00:00:00"),
-  new Date("1970-05-01T00:00:00"),
-  new Date("1970-06-02T00:00:00"),
-  new Date("1970-08-15T00:00:00"),
-  new Date("1970-11-01T00:00:00"),
-  new Date("1970-12-08T00:00:00"),
-  new Date("1970-12-25T00:00:00"),
-  new Date("1970-12-26T00:00:00"),
-];
-
 class Calendar {
   public days: Day[] = [];
   public months: Month[] = [];
