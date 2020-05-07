@@ -168,6 +168,6 @@ test("Is right day on", () => {
   calendar.weekDays = true;
   calendar.startDate = new Date("2020-03-21T00:00:00");
   calendar.endDate = new Date("2021-05-11T00:00:00");
-  expect(calendar.isRightDayOn(new Date("2020-10-15T00:00:00"))).toBe(true);
-  expect(calendar.isRightDayOn(new Date("2020-10-16T00:00:00"))).toBe(false);
+  expect(calendar.isValidDayOn(new Date("2020-10-15T00:00:00"))).toBe(true);
+  expect(calendar.isValidDayOn(new Date("2020-10-16T00:00:00"))).toBe(false);
 });

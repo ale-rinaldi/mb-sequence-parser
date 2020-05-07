@@ -26,6 +26,16 @@ enum Month {
   December,
 }
 
+enum InvalidDayReason {
+  NotStarted,
+  Ended,
+  DisabledDay,
+  DisabledMonth,
+  OddEvenDay,
+  OddEvenWeek,
+  WeekDayHoliday,
+}
+
 const Holidayys = [
   new Date("1970-01-01T00:00:00"),
   new Date("1970-01-06T00:00:00"),
@@ -127,22 +137,45 @@ class Calendar {
     return !!hd.isHoliday(date);
   }
 
-  public isRightDayOn(date: Date) {
-    return (
-      this.isStartedAndNotEndedOn(date) &&
-      this.isEnabledDayOn(date) &&
-      this.isEnabledMonthOn(date) &&
-      (date.getDate() % 2 === 0 ? this.onEvenDays() : this.onOddDays()) &&
-      (Calendar.getWeekNumber(date) % 2 === 0
+  public getInvalidDayReasonsOn(date: Date) {
+    let reasons: InvalidDayReason[] = [];
+
+    if (!this.isStartedOn(date)) reasons.push(InvalidDayReason.NotStarted);
+
+    if (this.isEndedOn(date)) reasons.push(InvalidDayReason.Ended);
+
+    if (!this.isEnabledDayOn(date)) reasons.push(InvalidDayReason.DisabledDay);
+
+    if (!this.isEnabledMonthOn(date))
+      reasons.push(InvalidDayReason.DisabledMonth);
+
+    if (!(date.getDate() % 2 === 0 ? this.onEvenDays() : this.onOddDays()))
+      reasons.push(InvalidDayReason.OddEvenDay);
+
+    if (
+      !(Calendar.getWeekNumber(date) % 2 === 0
         ? this.onEvenWeeks()
-        : this.onOddWeeks()) &&
-      (Calendar.isHolidayOn(date) ? this.onHolidays() : this.onWeekDays())
-    );
+        : this.onOddWeeks())
+    )
+      reasons.push(InvalidDayReason.OddEvenWeek);
+
+    if (!(Calendar.isHolidayOn(date) ? this.onHolidays() : this.onWeekDays()))
+      reasons.push(InvalidDayReason.WeekDayHoliday);
+
+    return reasons;
   }
 
-  public isRightDay() {
-    return this.isRightDayOn(new Date());
+  public isValidDayOn(date: Date) {
+    return this.getInvalidDayReasonsOn(date).length === 0;
+  }
+
+  public getInvalidDayReasons() {
+    return this.getInvalidDayReasonsOn(new Date());
+  }
+
+  public isValidDay() {
+    return this.isValidDayOn(new Date());
   }
 }
 
-export { Calendar, Day, Month };
+export { Calendar, Day, Month, InvalidDayReason };
