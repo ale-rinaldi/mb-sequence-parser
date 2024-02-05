@@ -3,7 +3,7 @@
 The file is Little Endian.
 
 | Hex   | Content                                                                                        |
-| ----- | ---------------------------------------------------------------------------------------------- |
+|-------|------------------------------------------------------------------------------------------------|
 | 00-02 | Version identification (I didn't investigate about the format, MB SPOT 8.64.5.1 sets 7B 14 0A) |
 | 03-03 | Seems to be always 41 ("A")                                                                    |
 
@@ -14,7 +14,7 @@ At the end of each sequence, another one begins, with no separators.
 ## Sequence structure
 
 | Hex     | Content                                                                               |
-| ------- | ------------------------------------------------------------------------------------- |
+|---------|---------------------------------------------------------------------------------------|
 | 00-03   | On air time (Unix timestamp, the date is always 01/01/1970)                           |
 | 04-04   | Liner identifier (int)                                                                |
 | 05-05   | bitwise AND (1: forced, 2: ends at time)                                              |
@@ -44,21 +44,24 @@ For now only the type 04, static file, is (really partially) documented.
 ### Type 04: static file
 
 | Hex     | Content                                                                                                                                                               |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 00-00   | Type of object (01=random song, 02=minilist, 04=static file, 05=event or time/date announcement, 08=executable, 09=external stream, 0A=YouTube, 0B=synthetized voice) |
 | 01-0B   | ?                                                                                                                                                                     |
 | 0C-8B   | File name                                                                                                                                                             |
 | 8C-10B  | File path                                                                                                                                                             |
 | 10C-1B7 | ?                                                                                                                                                                     |
 | 1B8-1C5 | Calendar (see section)                                                                                                                                                |
-| 1C6-3CB | ?                                                                                                                                                                     |
+| 1C6-2A3 | ?                                                                                                                                                                     |
+| 2A4-323 | Customer name                                                                                                                                                         |
+| 324-343 | Customer category                                                                                                                                                     |
+| 344-3CB | ?                                                                                                                                                                     |
 
 ## Calendar structure
 
 The calendar settings has a common format in both sequences and objects. Its length is 14 bytes (hex: E).
 
 | Hex   | Content                                                                                                                  |
-| ----- | ------------------------------------------------------------------------------------------------------------------------ |
+|-------|--------------------------------------------------------------------------------------------------------------------------|
 | 00-03 | ? (Someting related to calendar, it's FF FF FF 7F before saving the first time and becomes 00 00 00 00 after first save) |
 | 04-04 | 1: Sunday, 2: Monday, 4: Tuesday, 8: Wednesday, 16: Thursday, 32: Friday, 64: Saturday, 128: Even days                   |
 | 05-05 | 1: Odd day, 2: even weeks, 4: odd weeks, 8: weekdays, 16: holidays                                                       |

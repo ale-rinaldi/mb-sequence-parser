@@ -183,8 +183,20 @@ function parseStaticFileObject(file: FileReader): SequenceObject {
   // 1B8-1C5: Calendar
   obj.calendar = parseCalendar(file);
 
-  // 1C6-3CB: ?
-  file.skipBytes(0x206);
+  // 1C6-2A3: ?
+  file.skipBytes(0xDE);
+
+  // 2A4-323: Customer name
+  buf = file.readBytes(0x80, true);
+  obj.customerName = iconv.decode(buf, "ISO-8859-1").trim();
+
+  // 324-343: Customer category
+  buf = file.readBytes(0x20, true);
+  obj.customerCategory = iconv.decode(buf, "ISO-8859-1").trim();
+
+  // 344-3CB: ?
+  file.skipBytes(0x88);
+
   return obj;
 }
 

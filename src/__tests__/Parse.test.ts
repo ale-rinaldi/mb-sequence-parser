@@ -1,6 +1,6 @@
 import parser from "../Parse";
 import ObjectType from "../ObjectType";
-import { Day, Month } from "../Calendar";
+import { Day } from "../Calendar";
 
 const TEST_PATH = "./src/__tests__/test_files";
 
@@ -97,6 +97,8 @@ test("Sequence with both set and terminate at", () => {
   expect(sequence.objects[0].type).toBe(ObjectType.StaticFile);
   expect(sequence.objects[0].fileName).toBe("Peppina.mp3");
   expect(sequence.objects[0].filePath).toBe("C:\\Test\\");
+  expect(sequence.objects[0].customerName).toBe("Il Caffé della Peppina");
+  expect(sequence.objects[0].customerCategory).toBe("Alimentari");
   expect(sequence.objects[1].type).toBe(ObjectType.StaticFile);
   expect(sequence.objects[1].fileName).toBe("Prova.mp3");
   expect(sequence.objects[1].filePath).toBe("C:\\Test\\");
